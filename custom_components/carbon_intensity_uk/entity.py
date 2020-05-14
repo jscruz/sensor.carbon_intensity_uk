@@ -1,10 +1,10 @@
-"""BlueprintEntity class"""
+"""CarbonIntensityEntity class"""
 from homeassistant.helpers import entity
 
-from custom_components.blueprint.const import DOMAIN, VERSION, NAME
+from custom_components.carbon_intensity_uk.const import DOMAIN, VERSION, NAME
 
 
-class BlueprintEntity(entity.Entity):
+class CarbonIntensityEntity(entity.Entity):
     def __init__(self, coordinator, config_entry):
         self.coordinator = coordinator
         self.config_entry = config_entry
@@ -36,10 +36,7 @@ class BlueprintEntity(entity.Entity):
     @property
     def device_state_attributes(self):
         """Return the state attributes."""
-        return {
-            "time": str(self.coordinator.data.get("time")),
-            "static": self.coordinator.data.get("static"),
-        }
+        return self.coordinator.data
 
     async def async_added_to_hass(self):
         """Connect to dispatcher listening for entity data notifications."""
