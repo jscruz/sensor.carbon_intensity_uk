@@ -1,9 +1,10 @@
 {
   "domain": "carbon_intensity_uk",
   "name": "Carbon Intensity UK",
-  "documentation": "https://github.com/custom-components/sensor.carbon_intensity_uk",
+  "documentation": "https://github.com/jscruz/sensor.carbon_intensity_uk",
   "dependencies": [],
   "config_flow": true,
+  "issue_tracker": "https://github.com/jscruz/sensor.carbon_intensity_uk/issues",
   "codeowners": [
     "@jscruz"
   ],
