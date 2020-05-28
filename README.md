@@ -1,6 +1,7 @@
 # Carbon Intensity UK sensor
 
 [![GitHub Release][releases-shield]][releases]
+
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 
@@ -21,7 +22,7 @@ Platform | Description
 
 The sensor retrieves information using [Carbon Intensity UK API library](https://github.com/jscruz/carbonintensity)
 
-![alt Sensor attributes][attributes]
+![alt Sensor attributes](attributes.png "Sensor attributes")
 
 ## Installation
 
@@ -58,7 +59,7 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ***
 
-Based in the [blueprint]: https://github.com/custom-components/blueprint template.
+[blueprint]: https://github.com/custom-components/blueprint
 [buymecoffee]: https://www.buymeacoffee.com/jscruz
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
 [commits-shield]: https://img.shields.io/github/commit-activity/y/custom-components/sensor.carbon_intensity_uk.svg?style=for-the-badge
