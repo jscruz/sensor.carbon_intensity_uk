@@ -12,7 +12,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from .api import CarbonIntentisityApi
+from carbonintensity.client import Client as CarbonIntentisityApi
 
 from .const import (
     CONF_POSTCODE,
@@ -78,7 +78,7 @@ class CarbonIntensityDataUpdateCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             _LOGGER.debug("Coordinator update data async")
-            data = await self.api.async_get_lowest_intensity_for_next_day_period()
+            data = await self.api.async_get_data()
             _LOGGER.debug("Coordinator update done")
             return data.get("data", {})
         except Exception as exception:

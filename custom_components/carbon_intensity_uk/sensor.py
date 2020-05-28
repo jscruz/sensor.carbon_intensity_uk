@@ -3,6 +3,9 @@ from custom_components.carbon_intensity_uk.const import (
     DEFAULT_NAME,
     DOMAIN,
     ICON,
+    HIGH_ICON,
+    LOW_ICON,
+    MODERATE_ICON,
     SENSOR,
 )
 from custom_components.carbon_intensity_uk.entity import CarbonIntensityEntity
@@ -20,7 +23,7 @@ class CarbonIntensitySensor(CarbonIntensityEntity):
     @property
     def name(self):
         """Return the name of the sensor."""
-        return f"{DEFAULT_NAME}_{SENSOR}"
+        return f"{DEFAULT_NAME}"
 
     @property
     def state(self):
@@ -30,4 +33,12 @@ class CarbonIntensitySensor(CarbonIntensityEntity):
     @property
     def icon(self):
         """Return the icon of the sensor."""
-        return ICON
+        index = self.coordinator.data.get("current_period_index")
+        if index == "high":
+            return HIGH_ICON
+        elif index == "moderate":
+            return MODERATE_ICON
+        elif index == "low":
+            return LOW_ICON
+        else:
+            return ICON

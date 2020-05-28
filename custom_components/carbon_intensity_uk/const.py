@@ -5,10 +5,13 @@ DOMAIN = "carbon_intensity_uk"
 DOMAIN_DATA = f"{DOMAIN}_data"
 VERSION = "0.0.1"
 
-ISSUE_URL = "https://github.com/custom-components/carbon_intensity_uk/issues"
+ISSUE_URL = "https://github.com/custom-components/sensor.carbon_intensity_uk/issues"
 
 # Icons
 ICON = "mdi:leaf"
+LOW_ICON = "mdi:leaf"
+MODERATE_ICON = "mdi:factory"
+HIGH_ICON = "mdi:smog"
 
 # Device classes
 BINARY_SENSOR_DEVICE_CLASS = "connectivity"

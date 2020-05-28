@@ -5,7 +5,7 @@ from homeassistant.core import callback
 import logging
 _LOGGER = logging.getLogger(__name__)
 
-from .api import CarbonIntentisityApi
+from carbonintensity.client import Client as CarbonIntentisityApi
 
 from custom_components.carbon_intensity_uk.const import (  # pylint: disable=unused-import
     CONF_POSTCODE,
@@ -66,7 +66,7 @@ class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Return true if credentials is valid."""
         try:
             client = CarbonIntentisityApi(postcode)
-            await client.async_get_lowest_intensity_for_next_day_period()
+            await client.async_get_data()
             _LOGGER.debug("Input successfully")
             return True
         except Exception as exception:  # pylint: disable=broad-except
