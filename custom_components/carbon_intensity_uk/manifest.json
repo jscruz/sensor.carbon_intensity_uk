@@ -1,18 +1,12 @@
 {
   "domain": "carbon_intensity_uk",
   "name": "Carbon Intensity UK",
-  "documentation": "https://github.com/jscruz/sensor.carbon_intensity_uk",
-  "dependencies": [],
-  "version": "1.0.0",
+  "codeowners": ["@jscruz"],
   "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/jscruz/sensor.carbon_intensity_uk",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jscruz/sensor.carbon_intensity_uk/issues",
-  "codeowners": [
-    "@jscruz"
-  ],
-  "requirements": [
-    "aiohttp",
-    "numpy",
-    "carbon_intensity_uk"
-  ]
+  "requirements": ["aiohttp", "numpy", "carbon_intensity_uk"],
+  "version": "1.0.0"
 }
