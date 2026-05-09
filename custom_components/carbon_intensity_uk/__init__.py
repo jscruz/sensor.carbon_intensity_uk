@@ -9,8 +9,9 @@ import logging
 from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import Config, HomeAssistant
+from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from carbonintensity.client import Client as CarbonIntentisityApi
 
@@ -25,8 +26,10 @@ SCAN_INTERVAL = timedelta(seconds=600)
 
 _LOGGER = logging.getLogger(__name__)
 
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
-async def async_setup(hass: HomeAssistant, config: Config):
+
+async def async_setup(hass: HomeAssistant, config: dict):
     """Set up this integration using YAML is not supported."""
     return True
 
@@ -50,13 +53,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    for platform in PLATFORMS:
-        if entry.options.get(platform, True):
-            _LOGGER.debug("Found platform %s" % platform)
-            coordinator.platforms.append(platform)
-            hass.async_add_job(
-                hass.config_entries.async_forward_entry_setup(entry, platform)
-            )
+    platforms = [p for p in PLATFORMS if entry.options.get(p, True)]
+    coordinator.platforms.extend(platforms)
+    await hass.config_entries.async_forward_entry_setups(entry, platforms)
 
     entry.add_update_listener(async_reload_entry)
     return True
