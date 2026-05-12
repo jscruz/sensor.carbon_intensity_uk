@@ -6,6 +6,7 @@ https://github.com/jscruz/sensor.carbon_intensity_uk
 """
 import asyncio
 import logging
+import traceback
 from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
@@ -41,19 +42,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.info(STARTUP_MESSAGE)
 
     postcode = entry.data.get(CONF_POSTCODE)
-    _LOGGER.debug("Postcode setup: %s" % postcode)
+    _LOGGER.error("[carbon_intensity_uk] Setting up entry for postcode: %s", postcode)
 
     coordinator = CarbonIntensityDataUpdateCoordinator(hass, postcode=postcode)
-    _LOGGER.debug("Coordinator refresh triggered")
+    _LOGGER.error("[carbon_intensity_uk] Triggering initial coordinator refresh")
     await coordinator.async_refresh()
-    _LOGGER.debug("Coordinator refresh completed")
+    _LOGGER.error(
+        "[carbon_intensity_uk] Refresh done. last_update_success=%s data=%s",
+        coordinator.last_update_success,
+        coordinator.data,
+    )
 
     if not coordinator.last_update_success:
+        _LOGGER.error("[carbon_intensity_uk] Coordinator refresh failed — raising ConfigEntryNotReady")
         raise ConfigEntryNotReady
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
     platforms = [p for p in PLATFORMS if entry.options.get(p, True)]
+    _LOGGER.error("[carbon_intensity_uk] Forwarding setup to platforms: %s", platforms)
     coordinator.platforms.extend(platforms)
     await hass.config_entries.async_forward_entry_setups(entry, platforms)
 
@@ -76,11 +83,18 @@ class CarbonIntensityDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            _LOGGER.debug("Coordinator update data async")
+            _LOGGER.error("[carbon_intensity_uk] Fetching data from API")
             data = await self.api.async_get_data()
-            _LOGGER.debug("Coordinator update done")
-            return data.get("data", {})
+            _LOGGER.error("[carbon_intensity_uk] Raw API response: %s", data)
+            result = data.get("data", {})
+            _LOGGER.error("[carbon_intensity_uk] Parsed data keys: %s", list(result.keys()) if isinstance(result, dict) else result)
+            return result
         except Exception as exception:
+            _LOGGER.error(
+                "[carbon_intensity_uk] Exception fetching data: %s\n%s",
+                exception,
+                traceback.format_exc(),
+            )
             raise UpdateFailed(exception)
 
 
