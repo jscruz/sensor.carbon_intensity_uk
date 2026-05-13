@@ -8,5 +8,5 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jscruz/sensor.carbon_intensity_uk/issues",
   "requirements": ["aiohttp", "numpy", "carbon_intensity_uk"],
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
