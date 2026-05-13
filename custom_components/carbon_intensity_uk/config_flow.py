@@ -37,12 +37,12 @@ class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             valid = await self._test_credentials(user_input[CONF_POSTCODE])
             if valid:
-                _LOGGER.debug("Input is valid")
+                _LOGGER.debug("Postcode %s validated, creating config entry", user_input[CONF_POSTCODE])
                 return self.async_create_entry(
                     title=user_input[CONF_POSTCODE], data=user_input
                 )
             else:
-                _LOGGER.debug("Input not valid")
+                _LOGGER.warning("Postcode %s failed validation — check it is a valid UK postcode area", user_input[CONF_POSTCODE])
                 self._errors["base"] = "auth"
 
             return await self._show_config_form(user_input)
@@ -67,11 +67,10 @@ class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             client = CarbonIntentisityApi(postcode)
             await client.async_get_data()
-            _LOGGER.debug("Input successfully")
+            _LOGGER.debug("API connectivity test for postcode %s succeeded", postcode)
             return True
         except Exception as exception:  # pylint: disable=broad-except
-            _LOGGER.debug(exception)
-        _LOGGER.debug("Oops! Input failed!")
+            _LOGGER.warning("API connectivity test for postcode %s failed: %s", postcode, exception)
         return False
 
 

@@ -90,12 +90,8 @@ SENSOR_TYPES = [
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    _LOGGER.error(
-        "[carbon_intensity_uk] sensor async_setup_entry — coordinator data keys: %s",
-        list(coordinator.data.keys()) if coordinator.data else None,
-    )
     sensors = [CarbonIntensitySensor(coordinator, entry, sensor) for sensor in SENSOR_TYPES]
-    _LOGGER.error("[carbon_intensity_uk] Creating %d sensors: %s", len(sensors), [s.name for s in sensors])
+    _LOGGER.debug("Registering %d Carbon Intensity UK sensors", len(sensors))
     async_add_devices(sensors)
 
 
