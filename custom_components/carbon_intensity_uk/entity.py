@@ -27,14 +27,14 @@ class CarbonIntensityEntity(entity.Entity):
     @property
     def device_info(self):
         return {
-            "identifiers": {(DOMAIN, self.unique_id)},
+            "identifiers": {(DOMAIN, self.config_entry.entry_id)},
             "name": NAME,
             "model": VERSION,
             "manufacturer": NAME,
         }
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes."""
         return self.coordinator.data
 

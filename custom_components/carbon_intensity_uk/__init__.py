@@ -41,19 +41,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _LOGGER.info(STARTUP_MESSAGE)
 
     postcode = entry.data.get(CONF_POSTCODE)
-    _LOGGER.debug("Postcode setup: %s" % postcode)
+    _LOGGER.debug("Setting up Carbon Intensity UK for postcode: %s", postcode)
 
     coordinator = CarbonIntensityDataUpdateCoordinator(hass, postcode=postcode)
-    _LOGGER.debug("Coordinator refresh triggered")
+    _LOGGER.debug("Performing initial data fetch for postcode: %s", postcode)
     await coordinator.async_refresh()
-    _LOGGER.debug("Coordinator refresh completed")
 
     if not coordinator.last_update_success:
+        _LOGGER.warning(
+            "Initial data fetch failed for postcode %s — will retry on next poll", postcode
+        )
         raise ConfigEntryNotReady
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
     platforms = [p for p in PLATFORMS if entry.options.get(p, True)]
+    _LOGGER.debug("Forwarding entry setup to platforms: %s", platforms)
     coordinator.platforms.extend(platforms)
     await hass.config_entries.async_forward_entry_setups(entry, platforms)
 
@@ -76,16 +79,24 @@ class CarbonIntensityDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         try:
-            _LOGGER.debug("Coordinator update data async")
+            _LOGGER.debug("Fetching data from Carbon Intensity API")
             data = await self.api.async_get_data()
-            _LOGGER.debug("Coordinator update done")
-            return data.get("data", {})
+            result = data.get("data", {})
+            _LOGGER.debug(
+                "Data fetch succeeded: index=%s, forecast=%s gCO2/kWh",
+                result.get("current_period_index"),
+                result.get("current_period_forecast"),
+            )
+            return result
         except Exception as exception:
+            _LOGGER.warning("Failed to fetch data from Carbon Intensity API: %s", exception)
             raise UpdateFailed(exception)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Handle removal of an entry."""
+    postcode = entry.data.get(CONF_POSTCODE)
+    _LOGGER.debug("Unloading Carbon Intensity UK entry for postcode: %s", postcode)
     coordinator = hass.data[DOMAIN][entry.entry_id]
     unloaded = all(
         await asyncio.gather(
@@ -98,11 +109,15 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     )
     if unloaded:
         hass.data[DOMAIN].pop(entry.entry_id)
+        _LOGGER.debug("Successfully unloaded Carbon Intensity UK entry for postcode: %s", postcode)
+    else:
+        _LOGGER.warning("Failed to unload one or more platforms for postcode: %s", postcode)
 
     return unloaded
 
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Reload config entry."""
+    _LOGGER.debug("Reloading Carbon Intensity UK entry for postcode: %s", entry.data.get(CONF_POSTCODE))
     await async_unload_entry(hass, entry)
     await async_setup_entry(hass, entry)
