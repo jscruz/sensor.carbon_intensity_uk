@@ -52,7 +52,7 @@ class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        return CarbonIntensityOptionsFlowHandler(config_entry)
+        return CarbonIntensityOptionsFlowHandler()
 
     async def _show_config_form(self, user_input):  # pylint: disable=unused-argument
         """Show the configuration form to edit location data."""
@@ -77,13 +77,15 @@ class CarbonIntensityFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 class CarbonIntensityOptionsFlowHandler(config_entries.OptionsFlow):
     """Carbon Intensity UK config flow options handler."""
 
-    def __init__(self, config_entry):
-        """Initialize HACS options flow."""
-        self.config_entry = config_entry
-        self.options = dict(config_entry.options)
+    def __init__(self):
+        """Initialize options flow."""
+        # self.config_entry is provided by the OptionsFlow base class (HA 2024.11+)
+        # and must not be set here: it is a read-only property since HA 2025.12.
+        self.options = {}
 
     async def async_step_init(self, user_input=None):  # pylint: disable=unused-argument
         """Manage the options."""
+        self.options = dict(self.config_entry.options)
         return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
