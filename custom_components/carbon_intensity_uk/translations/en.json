@@ -5,7 +5,7 @@
                 "title": "Carbon Intensity UK",
                 "description": "Enter your UK postcode to get local carbon intensity data.",
                 "data": {
-                    "postcode": "UK Postcode (e.g. SW1)"
+                    "postcode": "UK Postcode or outward code (e.g. SW1)"
                 }
             }
         },
